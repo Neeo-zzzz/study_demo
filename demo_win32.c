@@ -21,6 +21,8 @@ int WINAPI WinMain(HINSTANCE hInstance,
     HWND hwnd;
     MSG msg;
     WNDCLASS wndclass;
+    //测试用
+    int a = 0;
 
     wndclass.style = CS_HREDRAW;
     wndclass.lpfnWndProc = WndProc;
