@@ -85,6 +85,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
         case WM_DESTROY:
             PostQuitMessage(0);
             return 0;
+        case WM_RBUTTONDBLCLK:
+            MessageBox(hwnd, TEXT("right click"), TEXT("message"), MB_OK);
+            return 0;
         case WM_LBUTTONDOWN:
             MessageBox(hwnd, TEXT("left click"), TEXT("message"), MB_OK);
             return 0;
