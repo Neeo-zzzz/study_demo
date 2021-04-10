@@ -71,6 +71,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     PAINTSTRUCT ps;
     RECT rect;
 
+    //处理消息
     switch(message)
     {
         case WM_PAINT:
@@ -87,15 +88,29 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
             LPCREATESTRUCT psc = (LPCREATESTRUCT)lParam;
             HWND hBtn1;
             //普通按钮BS_PUSHBUTTON
-            hBtn1 = CreateWindow(TEXT("BUTTON"), //类名
+            hBtn1 = CreateWindow(TEXT("BUTTON"), //类名,不区分大小写
                 TEXT("hello"), //标题名称
-                WS_CHILD/*创建子窗口*/|WS_VISIBLE/*可见*/|BS_PUSHBUTTON, //按钮样式,第三个为按钮风格
-                300,300, //位置
-                100,60, //宽度，高度
+                WS_CHILD/*创建子窗口*/|WS_VISIBLE/*可见*/|BS_BITMAP, //按钮样式,第三个为按钮风格
+                300,300, //位置x,y                                  //BITMAP指定为图片                        
+                20,20, //宽度，高度
                 hwnd, //父窗口句柄
                 (HMENU)1, //菜单句柄 控件id号 唯一
                 ((LPCREATESTRUCT)lParam)->hInstance, //实例句柄
                 NULL);
+            
+            //使用LoadImage加载位图，用以美化按钮
+            HBITMAP bitmap; 
+            bitmap = (HBITMAP)LoadImage(
+                NULL,    //模块句柄,独立资源则为NULL
+                TEXT("D:\\ofcollage\\C_Program\\target.bmp"),    //图片路径
+                IMAGE_BITMAP,    //IMAGE_BITMAP加载位图，IMAGE_CURSOR加载光标,IMAGE_ICON加载图标
+                20,    //宽度,为0则为实际宽高
+                20,    //高度,单位为像素pt
+                LR_LOADFROMFILE    //加载标志位, 这里从路径中加载图片
+            );  //函数返回位图句柄
+
+            //通过发送BM_SETIMAGE消息将位图与控件相关联
+            LRESULT ret=SendMessage(hBtn1,BM_SETIMAGE,(WPARAM)IMAGE_BITMAP,(LPARAM)bitmap); //wparam文件类型，lparam图片句柄
             
             //单选按钮
 
@@ -131,7 +146,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
         case WM_COMMAND:
         {
             //子窗口向父窗口传递消息时使用
-            switch(LOWORD(wParam)) //wParam低字节代表空间id
+            switch(LOWORD(wParam)) //wParam低字节代表控件id
             {
                 case 1:
                 {
@@ -166,5 +181,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
             MessageBox(hwnd, TEXT("left click"), TEXT("message"), MB_OK);
             return 0;
     }
+
+    //默认调用
     return DefWindowProc(hwnd, message, wParam, lParam);
 }
